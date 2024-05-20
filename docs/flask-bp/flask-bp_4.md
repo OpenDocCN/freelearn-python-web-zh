@@ -10,26 +10,11 @@
 
 就像我们在上一章中所做的那样，让我们为这个应用程序创建一个全新的目录，另外创建一个虚拟环境，并安装我们将要使用的一些基本包：
 
-```py
-$ mkdir -p ~/src/socializer && cd ~/src/socializer
-$ mkvirtualenv socializer
-$ pip install flask flask-sqlalchemy flask-bcrypt flask-login flask-wtf blinker pytest-flask
-
-```
+[PRE0]
 
 我们的应用程序布局暂时将与上一章中使用的布局非常相似：
 
-```py
-├── application
-│   ├── __init__.py
-│   └── users
-│       ├── __init__.py
-│       ├── models.py
-│       └── views.py
-└── run.py
-└── database.py
-
-```
+[PRE1]
 
 # 应用程序工厂
 
@@ -37,18 +22,7 @@ $ pip install flask flask-sqlalchemy flask-bcrypt flask-login flask-wtf blinker 
 
 值得庆幸的是，这完全可以通过应用程序工厂模式来实现，而 Flask 对此提供了很好的支持。让我们在`application/__init__.py`模块中添加一个`create_app`方法：
 
-```py
-from flask import Flask
-
-def create_app(config=None):
- app = Flask(__name__)
-
- if config is not None:
- app.config.from_object(config)
-
- return app
-
-```
+[PRE2]
 
 这个方法的作用相对简单：给定一个可选的`config`参数，构建一个 Flask 应用程序对象，可选地应用这个自定义配置，最后将新创建的 Flask 应用程序对象返回给调用者。
 
@@ -80,10 +54,7 @@ Flask，不管好坏，都是建立在基于代理对象的替代方法之上的
 
 其中一个代理对象`current_app`被创建并绑定到当前请求。这意味着，我们不再导入一个已经构建好的 Flask 应用程序对象（或者更糟糕的是，在同一个请求中创建额外的应用程序对象），而是用以下内容替换它：
 
-```py
-from flask import current_app as app
-
-```
+[PRE3]
 
 ### 提示
 
@@ -97,29 +68,17 @@ from flask import current_app as app
 
 为此，我们可以修改上一章中的`run.py`脚本，从我们的工厂实例化 app 对象，并调用新创建的实例的`run`方法，如下所示：
 
-```py
-from application import create_app
-
-app = create_app()
-app.run(debug=True)
-
-```
+[PRE4]
 
 现在，我们应该能够像以前一样运行这个极其简陋的应用程序：
 
-```py
-$ python run.py
-
-```
+[PRE5]
 
 ### 提示
 
 还可以调用 Python 解释器，以便为您导入并立即执行模块、包或脚本。这是通过`-m`标志实现的，我们之前对`run.py`的调用可以修改为更简洁的版本，如下所示：
 
-```py
-$ python –m run
-
-```
+[PRE6]
 
 # 单元和功能测试
 
@@ -127,31 +86,7 @@ $ python –m run
 
 Python 生态系统中测试库的主要组成部分是 unittest，它包含在标准库中，并包括了 xUnit 框架所期望的许多功能。虽然本书不会详细介绍 unittest，但一个典型的基于类的测试用例将遵循以下基本结构，假设我们仍然使用工厂模式来将应用程序配置与实例化分离：
 
-```py
-from myapp import create_app
-import unittest
-
-class AppTestCase(unittest.TestCase):
-
- def setUp(self):
- app = create_app()  # Could also pass custom settings.
- app.config['TESTING'] = True
- self.app = app
-
- # Whatever DB initialization is required
-
- def tearDown(self):
- # If anything needs to be cleaned up after a test.
- Pass
-
- def test_app_configuration(self):
- self.assertTrue(self.app.config['TESTING'])
- # Other relevant assertions
-
-if __name__ == '__main__':
- unittest.main()
-
-```
+[PRE7]
 
 使用 unittest 测试格式/样式的优点如下：
 
@@ -173,16 +108,7 @@ if __name__ == '__main__':
 
 如果上一段文字有点难以理解，那么一个简单的例子就足以澄清问题。让我们创建以下的`conftest.py`文件，其中将包含任何测试套件范围的固定装置和辅助工具，供其他测试使用：
 
-```py
-import pytest
-from application import create_app
-
-@pytest.fixture
-def app():
- app = create_app()
- return app
-
-```
+[PRE8]
 
 我们将在`tests/test_application.py`中创建我们的第一个测试模块，如下所示：
 
@@ -190,13 +116,7 @@ def app():
 
 请注意`tests_*`前缀对于测试文件名是重要的——它允许`pytest`自动发现哪些文件包含需要运行的测试函数和断言。如果您的 tests/folder 中的文件名没有上述前缀，那么测试运行器将放弃加载它，并将其视为包含具有测试断言的函数的文件。
 
-```py
-import flask
-
-def test_app(app):
- assert isinstance(app, flask.Flask)
-
-```
+[PRE9]
 
 ### 请注意
 
@@ -204,19 +124,7 @@ def test_app(app):
 
 我们将使用安装到我们的虚拟环境中的`py.test`可执行文件来运行测试套件（当我们添加了`pytest-flask`和`pytest`库时），在包含`conftest.py`和我们的 tests/文件夹的目录中运行，输出将指示我们的测试模块已被发现并运行：
 
-```py
-$ py.test
-=============== test session starts ================
-platform darwin -- Python 2.7.8 -- py-1.4.26 -- pytest-2.7.0
-rootdir: /path/to/socializer, inifile:
-plugins: flask
-collected 1 items
-
-tests/test_application.py .
-
-============= 1 passed in 0.02 seconds =============
-
-```
+[PRE10]
 
 就是这样！我们已经编写并运行了我们的第一个应用程序测试，尽管不是很有趣。如果你还不太明白发生了什么，不要担心；本章中将进行大量具体的测试，还会有更多的例子。
 
@@ -236,125 +144,17 @@ tests/test_application.py .
 
 有了这个想法，让我们开始实现所需的基本 SQLAlchemy 模型和关系。首先，让我们使用我们新创建的应用程序工厂来初始化和配置 Flask-SQLAlchemy 扩展，以及使用相同的混合属性方法来哈希我们的用户密码，这是我们在上一章中探讨过的方法。我们的`application/__init__.py`如下：
 
-```py
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
-
-# Initialize the db extension, but without configuring
-# it with an application instance.
-db = SQLAlchemy()
-
-# The same for the Bcrypt extension
-flask_bcrypt = Bcrypt()
-
-def create_app(config=None):
- app = Flask(__name__)
-
- if config is not None:
- app.config.from_object(config)
-
- # Initialize any extensions and bind blueprints to the
- # application instance here.
- db.init_app(app)
- flask_bcrypt.init_app(app)
-
- return app
-
-```
+[PRE11]
 
 由于应用程序工厂的使用，我们将扩展（`db`和`flask_bcrypt`）的实例化与它们的配置分开。前者发生在导入时，后者需要在构建 Flask 应用对象时发生。幸运的是，大多数现代的 Flask 扩展都允许发生这种确切的分离，正如我们在前面的片段中所演示的那样。
 
 现在，我们将通过创建`application/users/__init__.py`来创建我们的用户包，然后我们将创建`application/users/models.py`，其中包含我们用于 Flask-Login 扩展的标准部分（稍后我们将使用），就像我们在上一章中所做的那样。此外，我们将为我们的关注者表和用户模型上的关联关系添加一个显式的 SQLAlchemy 映射：
 
-```py
-import datetime
-from application import db, flask_bcrypt
-from sqlalchemy.ext.hybrid import hybrid_property
-
-__all__ = ['followers', 'User']
-
-# We use the explicit SQLAlchemy mappers for declaring the
-# followers table, since it does not require any of the features
-# that the declarative base model brings to the table.
-#
-# The `follower_id` is the entry that represents a user who
-# *follows* a `user_id`.
-followers = db.Table(
- 'followers',
- db.Column('follower_id', db.Integer, db.ForeignKey('user.id'),
- primary_key=True),
- db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
- primary_key=True))
-
-class User(db.Model):
-
- # The primary key for each user record.
- id = db.Column(db.Integer, primary_key=True)
-
- # The unique email for each user record.
- email = db.Column(db.String(255), unique=True)
-
- # The unique username for each record.
- username = db.Column(db.String(40), unique=True)
-
- # The hashed password for the user
- _password = db.Column('password', db.String(60))
- #  The date/time that the user account was created on.
- created_on = db.Column(db.DateTime,
- default=datetime.datetime.utcnow)
-
- followed = db.relationship('User',
- secondary=followers,
- primaryjoin=(id==followers.c.follower_id ),
- secondaryjoin=(id==followers.c.user_id),
- backref=db.backref('followers', lazy='dynamic'),
- lazy='dynamic')
-
- @hybrid_property
- def password(self):
- """The bcrypt'ed password of the given user."""
-
- return self._password
-
- @password.setter
- def password(self, password):
- """Bcrypt the password on assignment."""
-
- self._password = flask_bcrypt.generate_password_hash(
- password)
-
- def __repr__(self):
- return '<User %r>' % self.username
-
- def is_authenticated(self):
- """All our registered users are authenticated."""
- return True
-
- def is_active(self):
- """All our users are active."""
- return True
-
- def is_anonymous(self):
- """We don't have anonymous users; always False"""
- return False
- def get_id(self):
- """Get the user ID."""
- return unicode(self.id)
-
-```
+[PRE12]
 
 用户模型的`followed`属性是一个 SQLAlchemy 关系，它通过中间的关注者表将用户表映射到自身。由于社交连接需要隐式的多对多关系，中间表是必要的。仔细看一下`followed`属性，如下所示的代码：
 
-```py
- followed = db.relationship('User',
- secondary=followers,
- primaryjoin=(id==followers.c.follower_id ),
- secondaryjoin=(id==followers.c.user_id),
- backref=db.backref('followers', lazy='dynamic'),
- lazy='dynamic')
-
-```
+[PRE13]
 
 我们可以看到，与本章和以前章节中使用的常规列定义相比，声明有些复杂。然而，`relationship`函数的每个参数都有一个非常明确的目的，如下列表所示：
 
@@ -372,44 +172,7 @@ class User(db.Model):
 
 现在，我们将为我们的用户模型添加一些方法，以便便于关注/取消关注其他用户。由于 SQLAlchemy 的一些内部技巧，为用户添加和移除关注者可以表达为对本地 Python 列表的操作，如下所示：
 
-```py
-def unfollow(self, user):
- """
- Unfollow the given user.
-
- Return `False` if the user was not already following the user.
- Otherwise, remove the user from the followed list and return
- the current object so that it may then be committed to the 
- session.
- """
-
- if not self.is_following(user):
- return False
-
- self.followed.remove(user)
- return self
-
-def follow(self, user):
- """
- Follow the given user.
- Return `False` if the user was already following the user.
- """
-
- if self.is_following(user):
- return False
-
- self.followed.append(user)
- return self
-
-def is_following(self, user):
- """
- Returns boolean `True` if the current user is following the
- given `user`, and `False` otherwise.
- """
- followed = self.followed.filter(followers.c.user_id == user.id)
- return followed.count() > 0
-
-```
+[PRE14]
 
 ### 注意
 
@@ -419,50 +182,11 @@ def is_following(self, user):
 
 目前，这个特定的模型将是一个简单的典范。以下是该项目的用户模型的当前实现：
 
-```py
-from application import db
-import datetime
-
-__all__ = ['Post']
-
-class Post(db.Model):
-
- # The unique primary key for each post created.
- id = db.Column(db.Integer, primary_key=True)
- # The free-form text-based content of each post.
- content = db.Column(db.Text())
-
- #  The date/time that the post was created on.
- created_on = db.Column(db.DateTime(),
- default=datetime.datetime.utcnow, index=True)
-
- # The user ID that created this post.
- user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-
- def __repr__(self):
- return '<Post %r>' % self.body
-
-```
+[PRE15]
 
 一旦我们定义了`Post`模型，我们现在可以为用户模型添加一个方法，该方法允许我们获取与当前实例链接的用户的新闻源。我们将该方法命名为`newsfeed`，其实现如下：
 
-```py
-def newsfeed(self):
- """
- Return all posts from users followed by the current user,
- in descending chronological order.
-
- """
-
- join_condition = followers.c.user_id == Post.user_id
- filter_condition = followers.c.follower_id == self.id
- ordering = Post.created_on.desc()
-
- return Post.query.join(followers,
- (join_condition)).filter(
- filter_condition).order_by(ordering)
-
-```
+[PRE16]
 
 ### 注意
 
@@ -474,12 +198,7 @@ def newsfeed(self):
 
 首先，让我们创建一个新的`test_settings.py`文件，它与我们现有的`settings.py`同级。这个新文件将包含我们在运行测试套件时想要使用的应用程序配置常量。最重要的是，它将包含一个指向不是我们应用程序数据库的数据库的 URI，如下所示：
 
-```py
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_app.db'
-DEBUG = True
-TESTING = True
-
-```
+[PRE17]
 
 ### 注意
 
@@ -487,46 +206,7 @@ TESTING = True
 
 我们还将对`conftest.py`文件进行一些添加，以添加额外的装置，用于初始化测试数据库，并确保我们有一个 SQLAlchemy 数据库会话对象可用于可能需要它的任何测试函数：
 
-```py
-import pytest
-import os
-from application import create_app, db as database
-
-DB_LOCATION = '/tmp/test_app.db'
-
-@pytest.fixture(scope='session')
-def app():
- app = create_app(config='test_settings')
- return app
-
-@pytest.fixture(scope='session')
-def db(app, request):
- """Session-wide test database."""
- if os.path.exists(DB_LOCATION):
- os.unlink(DB_LOCATION)
-
- database.app = app
- database.create_all()
-
- def teardown():
- database.drop_all()
- os.unlink(DB_LOCATION)
- request.addfinalizer(teardown)
- return database
-
-@pytest.fixture(scope='function')
-def session(db, request):
-
- session = db.create_scoped_session()
- db.session = session
-
- def teardown():
- session.remove()
-
- request.addfinalizer(teardown)
- return session
-
-```
+[PRE18]
 
 ### 注意
 
@@ -538,65 +218,13 @@ def session(db, request):
 
 我们可以编写一个简单的测试，从我们的声明性用户模型中创建一个新用户，在`tests/test_user_model.py`中：
 
-```py
-from application.users import models
-
-def test_create_user_instance(session):
- """Create and save a user instance."""
-
- email = 'test@example.com'
- username = 'test_user'
- password = 'foobarbaz'
-
- user = models.User(email, username, password)
- session.add(user)
- session.commit()
-
- # We clear out the database after every run of the test suite
- # but the order of tests may affect which ID is assigned.
- # Let's not depend on magic numbers if we can avoid it.
- assert user.id is not None
-
- assert user.followed.count() == 0
- assert user.newsfeed().count() == 0
-
-```
+[PRE19]
 
 在使用`py.test`运行测试套件后，我们应该看到我们新创建的测试文件出现在列出的输出中，并且我们的测试应该无错误地运行。我们将断言我们新创建的用户应该有一个 ID（由数据库分配），并且不应该关注任何其他用户。因此，我们创建的用户的新闻源也不应该有任何元素。
 
 让我们为用户数据模型的非平凡部分添加一些更多的测试，这将确保我们的关注/关注关系按预期工作：
 
-```py
-def test_user_relationships(session):
- """User following relationships."""
-
- user_1 = models.User(
- email='test1@example.com', username='test1',
- password='foobarbaz')
- user_2 = models.User(
- email='test2@example.com', username='test2',
- password='bingbarboo')
-
- session.add(user_1)
- session.add(user_2)
-
- session.commit()
-
- assert user_1.followed.count() == 0
- assert user_2.followed.count() == 0
-
- user_1.follow(user_2)
-
- assert user_1.is_following(user_2) is True
- assert user_2.is_following(user_1) is False
- assert user_1.followed.count() == 1
-
- user_1.unfollow(user_2)
-
- assert user_1.is_following(user_2) is False
- assert user_1.followed.count() == 0
-
-```
+[PRE20]
 
 # 使用 Blinker 发布/订阅事件
 
@@ -648,108 +276,23 @@ Flask-Login 发布了半打信号，其中许多可以用于模块化认证问�
 
 让我们创建一个信号，每当一个用户关注另一个用户时就发布一个事件。首先，我们需要创建我们的`Namespace`信号容器对象，以便我们可以声明我们的信号主题。让我们在`application/__init__.py`模块中做这件事：
 
-```py
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
-from blinker import Namespace
-
-# Initialize the db extension, but without configuring
-# it with an application instance.
-db = SQLAlchemy()
-flask_bcrypt = Bcrypt()
-
-socializer_signals = Namespace()
-user_followed = socializer_signals.signal('user-followed')
-
-# …
-
-```
+[PRE21]
 
 一旦这个功能就位，我们在`User.follow()`方法中发出`user-followed`事件就很简单了，如下所示：
 
-```py
-def follow(self, user):
- """
- Follow the given user.
-
- Return `False` if the user was already following the user.
- """
-
- if self.is_following(user):
- return False
- self.followed.append(user)
-
- # Publish the signal event using the current model (self) as sender.
- user_followed.send(self)
-
- return self
-
-```
+[PRE22]
 
 ### 注意
 
-记得添加```pyfrom the application import `user_followed`` import line at the top of the `application/users/models.py` module.
+记得在`application/users/models.py`模块顶部添加`from the application import user_followed`导入行。
 
 Once we have an event that is published, a subscriber may be connected. Let's implement the signal handlers in `application/signal_handlers.py`:
 
-```
-
-__all__ = ['user_followed_email']
-
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-
-logger = logging.getLogger(__name__)
-
-def user_followed_email(user, **kwargs):
-
-logger.debug(
-
-"向{user}发送电子邮件".format(user=user.username))
-
-from application import user_followed
-
-def connect_handlers():
-
-user_followed.connect(user_followed_email)
-
-```py
+[PRE23]
 
 Finally, we will need to ensure that our signal handlers are registered by importing the functions to the `application/__init__.py` module:
 
-```
-
-from flask import Flask
-
-from flask.ext.sqlalchemy import SQLAlchemy
-
-from flask.ext.bcrypt import Bcrypt
-
-from blinker import Namespace
-
-# 初始化 db 扩展，但不配置
-
-# 它与应用程序实例一起。
-
-db = SQLAlchemy()
-
-flask_bcrypt = Bcrypt()
-
-socializer_signals = Namespace()
-
-user_followed = socializer_signals.signal('user-followed')
-
-from signal_handlers import connect_handlers
-
-connect_handlers()
-
-# …
-
-# …
-
-```py
+[PRE24]
 
 After this is added, every time a user follows another user, we will have a debug message printed to the configured log output. Implementing the functionality to actually send an e-mail to a user is left as an exercise for the reader; a good starting point would be to use the `Flask-Mail` extension.
 
@@ -765,261 +308,19 @@ In the previous chapter, we glossed over some of the necessary exception handlin
 
 First, let's create our basic user view handlers in `application/users/views.py`:
 
-```
-
-from flask import Blueprint, render_template, url_for, redirect, flash, g
-
-from flask.ext.login import login_user, logout_user
-
-from flask.ext.wtf import Form
-
-from wtforms import StringField, PasswordField
-
-from wtforms.validators import DataRequired, Length
-
-from models import User
-
-from application import db, flask_bcrypt
-
-users = Blueprint('users', __name__, template_folder='templates')
-
-class Login	Form(Form):
-
-"""
-
-表示基本的登录表单元素和验证器。
-
-"""
-
-username = StringField('username',
-
-validators=[DataRequired()])
-
-password = PasswordField('password',
-
-validators=[DataRequired(),Length(min=6)])
-
-class CreateUserForm(Form):
-
-"""
-
-封装创建新用户所需的必要信息。
-
-"""
-
-username = StringField('username', validators=[DataRequired(), Length(min=3, max=40)])
-
-email = StringField('email', validators=[DataRequired(), Length(max=255)])
-
-password = PasswordField('password', validators=[DataRequired(),
-
-Length(min=8)])
-
-@users.route('/signup', methods=['GET', 'POST'])
-
-def signup():
-
-"""
-
-基本用户创建功能。
-
-"""
-
-form = CreateUserForm()
-
-if form.validate_on_submit():
-
-user = User( username=form.username.data,
-
-email=form.email.data,
-
-password=form.password.data)
-
-# 将用户添加到数据库
-
-db.session.add(user)
-
-db.session.commit()
-
-# 一旦我们成功将用户持久化到数据库中，
-
-# 验证当前会话的用户
-
-login_user(user，remember=True)
-
-返回重定向到 url_for('users.index')
-
-返回 render_template('users/signup.html'，form=form)
-
-@users.route('/'，methods=['GET'])
-
-def index():
-
-返回"用户索引页！"，200
-
-@users.route('/login'，methods=['GET'，'POST'])
-
-def login():
-
-"""
-
-基本用户登录功能。
-
-"""
-
-如果 g 中有'user'属性并且 g.user.is_authenticated（）：
-
-返回重定向到 url_for('users.index')
-
-form = LoginForm()
-
-如果 form.validate_on_submit（）：
-
-# 我们在这里使用 one（）而不是 first（）
-
-user = User.query.filter_by(username=form.username.data).one()
-
-如果用户不存在或者 flask_bcrypt.check_password_hash(user.password，form.password.data)：
-
-flash("不存在这样的用户。")
-
-返回 render_template('users/login.html'，form=form)
-
-login_user(user，remember=True)
-
-返回重定向到 url_for('users.index')
-
-返回 render_template('users/login.html'，form=form)
-
-@users.route('/logout'，methods=['GET'])
-
-def logout():
-
-logout_user()
-
-返回重定向到 url_for('users.login')
-
-```py
+[PRE25]
 
 You'll notice that much of the login and logout functionality is similar to what we created in the previous chapter using the Flask-Login extension. So, we'll simply include these functionalities and defined routes without comment (in addition to the related Jinja templates) and focus on the new signup route that encapsulates the logic necessary to create a new user. This view utilizes the new `application/users/templates/users/signup.html` view, which simply includes the relevant form controls that allow a user to input their desired username, email address, and password:
 
-```
-
-{% extends "layout.html" %}
-
-{% block content %}
-
-<form action="{{ url_for('users.signup')}}" method="post">
-
-{{ form.hidden_tag() }}
-
-{{ form.id }}
-
-<div>{{ form.username.label }}: {{ form.username }}</div>
-
-{% if form.username.errors %}
-
-<ul class="errors">{% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-
-{% endif %}
-
-<div>{{ form.email.label }}: {{ form.email }}</div>
-
-{% if form.email.errors %}
-
-<ul class="errors">{% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-
-{% endif %}
-
-<div>{{ form.password.label }}: {{ form.password }}</div>
-
-{% if form.password.errors %}
-
-<ul class="errors">{% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-
-{% endif %}
-
-<div><input type="submit" value="注册！"></div>
-
-</form>
-
-{% endblock %}
-
-```py
+[PRE26]
 
 Once we have the preceding template in place, we will update our application factory to bind the user views to the application object. We will also initialize the Flask-Login extension as we did in the previous chapter:
 
-```
-
-来自 flask 的导入 Flask
-
-来自 flask.ext.sqlalchemy 的导入 SQLAlchemy
-
-来自 flask.ext.bcrypt 的导入 Bcrypt
-
-来自 blinker 的导入 Namespace
-
-来自 flask.ext.login 的导入 LoginManager
-
-# 初始化 db 扩展，但不配置
-
-# 它与应用程序实例一起。
-
-db = SQLAlchemy()
-
-flask_bcrypt = Bcrypt()
-
-login_manager = LoginManager()
-
-socializer_signals = Namespace()
-
-user_followed = socializer_signals.signal('user-followed')
-
-from signal_handlers import *
-
-def create_app(config=None):
-
-app = Flask(__name__)
-
-如果 config 不为 None：
-
-app.config.from_object(config)
-
-# 初始化任何扩展并将蓝图绑定到
-
-# 应用程序实例在这里。
-
-db.init_app(app)
-
-flask_bcrypt.init_app(app)
-
-login_manager.init_app(app)
-
-来自应用程序用户视图的导入用户
-
-app.register_blueprint(users，url_prefix='/users')
-
-来自应用程序用户的导入模型作为 user_models
-
-@login_manager.user_loader
-
-de fload_user(user_id):
-
-返回 user_models.User.query.get(int(user_id))
-
-返回 app
-
-```py
+[PRE27]
 
 Don't forget to add a `SECRET_KEY` configuration value to our `application/settings.py` module:
 
-```
-
-SQLALCHEMY_DATABASE_URI = 'sqlite:///socializer.db'
-
-SECRET_KEY = 'BpRvzXZ800[-t:=z1eZtx9t/，P*'
-
-```py
+[PRE28]
 
 Now, we should be able to run the application and visit `http://localhost:5000/users/signup`, where we will be presented with a series of form inputs to create a new user account. On the successful creation of a new user, we will be automatically authenticated using the `login_user()` method of the Flask-Login extension.
 
@@ -1031,127 +332,23 @@ What we have not accounted for, however, are the situations where the creation o
 
 In order to ensure that these events are handled in the most graceful manner possible, we must encapsulate the portions of the code that may raise the relevant exceptions that signal one of these conditions. Thus, in our `application/users/views.py` module in the signup route, we will modify the portion of the code where we will persist the user to the database:
 
-```
-
-# 放在其他导入的地方…
-
-从 sqlalchemy 导入 exc
-
-# …
-
-尝试：
-
-db.session.add(user)
-
-db.session.commit()
-
-except exc.IntegrityError as e:
-
-# 唯一列约束被违反
-
-current_app.exception("用户唯一约束违反。")
-
-返回 render_template('users/signup.html'，form=form)
-
-except exc.SQLAlchemyError:
-
-current_app.exception("无法保存新用户！")
-
-flash("创建此用户时出现问题！")
-
-返回 render_template('users/signup.html'，form=form)
-
-```py
+[PRE29]
 
 Additionally, we will wrap `User.query.filter_by(username=form.username.data).one()` in the login route in the same module with a try/except block, to ensure that we handle the case where the username submitted in the login form does not exist at all in the database:
 
-```
-
-尝试：
-
-# 我们在这里使用 one（）而不是 first（）
-
-user = User.query.filter_by(
-
-username=form.username.data).one()s
-
-except NoResultFound:
-
-flash("用户{username}不存在。".format(
-
-username=form.username.data））
-
-返回 render_template('users/login.html'，form=form)
-
-# …
-
-```py
+[PRE30]
 
 # Functional testing
 
 Now that we created a few routes and templates to handle user signup and login, let's utilize some of the `py.test` knowledge that we gained earlier in the chapter in order to write some post facto integration tests to ensure that our views are behaving as we expect. First, let's create a new test module in `application/tests/test_user_views.py` and write our first test that uses the client fixture so as to simulate a request to the application via the built-in Werkzeug test client. This will ensure that a proper request context has been constructed so that the context bound objects (for example, `url_for`, `g`) are available, as follows:
 
-```
-
-def test_get_user_signup_page(client):
-
-"""确保注册页面可用。"""
-
-response = client.get('/users/signup')
-
-assert response.status_code == 200
-
-assert '注册！' in response.data
-
-```py
+[PRE31]
 
 The preceding test first makes a request to the `/users/signup` route and then asserts that the HTTP response code for this route is `200` (the default value for any successful return `render_template()` function). Then it asserts that the **Sign up!** button text appears in the returned HTML, which is a relatively safe guarantee that the page in question was rendered without any major errors.
 
 Next, let's add a test for a successful user signup, as follows:
 
-```
-
-来自 flask 的导入 session，get_flashed_messages
-
-来自应用程序用户模型的导入用户
-
-来自应用程序的导入 flask_bcrypt
-
-def test_signup_new_user（client）：
-
-"""成功注册新用户。"""
-
-数据= {'用户名'：'test_username'，'电子邮件'：'test@example.com'，
-
-'password'：'my test password'}
-
-响应=客户端发布（'/用户/注册'，数据=数据）
-
-# 成功创建后我们重定向。
-
-断言 response.status_code == 302
-
-# 断言由于成功登录而创建了会话
-
-断言'_id'在会话中
-
-# 确保我们没有存储的闪存消息指示错误
-
-# 发生。
-
-断言 get_flashed_messages（）== []
-
-user = User.query.filter_by（username = data['username']）。one（）
-
-断言用户电子邮件==数据['电子邮件']
-
-断言用户密码
-
-断言 flask_bcrypt.check_password_hash（
-
-user.password，data['password']）
-
-```py
+[PRE32]
 
 If we were to run the test suite immediately, it would fail. This is due to a somewhat subtle effect introduced by Flask-WTF, which expects a CSRF token to be provided for any submitted form data. The following are the two ways in which we can fix this:
 
@@ -1164,67 +361,13 @@ In the preceding tests, we will first create a dictionary of our simulated form 
 
 While most developers are very keen on testing the success path of a request, it's equally, if not more, important to test the most common failure paths. To this end, let's add the following few tests for the most typical failure scenarios, the first of which would be the use of an invalid username:
 
-```
-
-导入 pytest
-
-导入 sqlalchemy
-
-def test_signup_invalid_user（client）：
-
-"""尝试使用无效数据注册。"""
-
-数据= {'用户名'：'x'，'电子邮件'：'short@example.com'，
-
-'password'：'a great password'}
-
-响应=客户端发布（'/用户/注册'，数据=数据）
-
-# 有了表单错误，我们仍然向客户端返回 200
-
-# 浏览器并不总是最擅长处理正确的 4xx 响应代码。
-
-断言 response.status_code == 200
-
-断言'must be between 3 and 40 characters long.'在 response.data 中
-
-```py
+[PRE33]
 
 ### Note
 
 Remember, we defined our form validation rules for user signup in the `application.users.views.CreateUserForm` class; usernames are required to be between 3 and 40 characters long.
 
-```
-
-def test_signup_invalid_user_missing_fields（client）：
-
-"""尝试使用缺少的电子邮件注册。"""
-
-数据= {'用户名'：'no_email'，'密码'：'a great password'}
-
-response = client.post（'/users/signup'，数据=数据）
-
-断言 response.status_code == 200
-
-断言'required'在 response.data 中
-
-with pytest.raises（sqlalchemy.orm.exc.NoResultFound）：
-
-User.query.filter_by（username = data['username']）。one（）
-
-数据= {'用户名': '无密码'，'电子邮件'：'test@example.com'}
-
-响应=客户端发布（'/用户/注册'，数据=数据）
-
-断言 response.status_code == 200
-
-断言'required'在 response.data 中
-
-with pytest.raises（sqlalchemy.orm.exc.NoResultFound）：
-
-User.query.filter_by（username = data['username']）。one（）
-
-```py
+[PRE34]
 
 ### Note
 
@@ -1236,197 +379,31 @@ While we have built up most of the supporting architecture to provide the functi
 
 To make the display of information about the owner of a post a bit simpler, let's add a relationship definition to our `Post` model:
 
-```
-
-类帖子（db.Model）：
-
-# …
-
-user = db.relationship（'User'，
-
-backref = db.backref（'posts'，lazy ='dynamic'）
-
-```py
+[PRE35]
 
 This will allow us to use `post.user` to access any of the user information that is associated with a given post, which is going to be quite useful in any view that displays a single post or a list of posts.
 
 Let's add a route for this in `application/users/views.py`:
 
-```
-
-@users.route（'/feed'，methods = ['GET']）
-
-@login_required
-
-def feed（）：
-
-"""
-
-列出经过身份验证的用户的所有帖子；最近的第一个。
-
-"""
-
-帖子= current_user.newsfeed（）
-
-返回 render_template（'users/feed.html'，posts=posts）
-
-```py
+[PRE36]
 
 Note that the preceding snippet uses the `current_user` proxy (which you should import to the module) that is provided by the Flask-Login extension. As the Flask-Login extension stores the user object of the authenticated user in the proxy, we can call methods and attributes on it just as we would on a normal `user` object.
 
 As the previous feed endpoint is up and running, we'll need the supporting template in `application/users/templates/users/feed.html` so that we can actually render a response:
 
-```
-
-{% extends "layout.html" %}
-
-{% block content %}
-
-<div class="new-post">
-
-<p><a href="{{url_for('posts.add')}}">New Post</a></p>
-
-</div>
-
-{% for post in posts %}
-
-<div class="post">
-
-<span class="author">{{post.user.username}}</span>，发布于<span class="date">{{post.created_on}}</span>
-
-<pre><code>{{post.content}}</code></pre>
-
-</div>
-
-{% endfor %}
-
-{% endblock %}
-
-```py
+[PRE37]
 
 The last bit that we need is the view handler to add a new post. As we haven't created the `application/posts/views.py` module, let's do that. We'll need a `Flask-WTForm` class to handle/validate the new posts and a route handler to send and process the required fields, all hooked up to a new blueprint:
 
-```
-
-从 flask 导入蓝图，render_template，url_for，重定向，闪存，current_app
-
-从 flask.ext.login 导入 login_required，current_user
-
-从 flask.ext.wtf 导入表单
-
-从 wtforms 导入字符串字段
-
-从 wtforms.widgets 导入 TextArea
-
-从 wtforms.validators 导入 DataRequired
-
-从 sqlalchemy 导入 exc
-
-从模型导入帖子
-
-从应用程序导入 db
-
-帖子= Blueprint（'posts'，__name__，template_folder ='templates'）
-
-类 CreatePostForm（Form）：
-
-"""用于创建新帖子的表单。"""
-
-content = StringField（'content'，widget = TextArea（），
-
-validators=[DataRequired（）]
-
-@posts.route（'/add'，methods = ['GET'，'POST']）
-
-@login_required
-
-def add（）：
-
-"""添加新帖子。"""
-
-form = CreatePostForm（）
-
-如果 form.validate_on_submit（）：
-
-user_id = current_user.id
-
-post = Post（user_id = user_id，content = form.content.data）
-
-db.session.add（post）
-
-尝试：
-
-db.session.commit（）
-
-除了 exc.SQLAlchemyError：
-
-current_app.exception（“无法保存新帖子！”）
-
-闪存（“创建您的帖子时出现问题！”）
-
-否则：
-
-返回 render_template（'posts/add.html'，form=form）
-
-返回重定向（url_for（'users.feed'））
-
-```py
+[PRE38]
 
 The corresponding `application/posts/templates/posts/add.html` file is, as expected, relatively simple and reminiscent of the view template used in the previous chapter. Here it is:
 
-```
-
-{% extends "layout.html" %}
-
-{% block content %}
-
-<form action="{{ url_for('posts.add')}}" method="post">
-
-{{ form.hidden_tag（）}}
-
-{{表单.id}}
-
-<div class="row">
-
-<div>{{ form.content.label }}：{{ form.content }}</div>
-
-{% if form.content.errors %}
-
-<ul class="errors">{% for error in form.content.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-
-{% endif %}
-
-</div>
-
-<div><input type="submit" value="Post"></div>
-
-</form>
-
-{% endblock %}
-
-```py
+[PRE39]
 
 Finally, we will need to make the application aware of this newly created posts blueprint by binding it to our application object in our application factory, in `application/__init__.py`:
 
-```
-
-def create_app(config=None):
-
-app = Flask(__name__)
-
-# …
-
-from application.users.views import users
-
-app.register_blueprint(users, url_prefix='/users')
-
-from application.posts.views import posts
-
-app.register_blueprint(posts, url_prefix='/posts')
-
-# …
-
-```
+[PRE40]
 
 一旦上述代码就位，我们可以通过在`/users/signup`端点的 Web 界面上创建用户帐户，然后在`/posts/add`上为用户创建帖子来为这些用户生成一些测试用户和帖子。否则，我们可以创建一个小的 CLI 脚本来为我们执行此操作，我们将在下一章中学习如何实现。我们还可以编写一些测试用例来确保新闻源按预期工作。实际上，我们可以做这三件事！
 
