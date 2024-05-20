@@ -289,7 +289,7 @@ def products(page=1):
 -> return render_template('products.html', products=product)
 (Pdb) u
 > /Users/shalabhaggarwal/workspace/flask_heroku/lib/python2.7/sitepackages/Flask-0.10.1-py2.7.egg/flask/app.py(1461)dispatch_request()
--> return self.view_functions[rule.endpoint](**req.view_args)
+-> return self.view_functionsrule.endpoint
 (Pdb) u
 > /Users/shalabhaggarwal/workspace/flask_heroku/lib/python2.7/sitepackages/Flask-0.10.1-py2.7.egg/flask/app.py(1475)full_dispatch_request()
 -> rv = self.dispatch_request()

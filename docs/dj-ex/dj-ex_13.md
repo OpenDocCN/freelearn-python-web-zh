@@ -377,9 +377,11 @@ python manage.py collectstatic
 
 ```py
 You have requested to collect static files at the destination location as specified in your settings:
-    /educa/static
+
+    /educa/static
     
-This will overwrite existing files!Are you sure you want to do this?
+This will overwrite existing files!
+Are you sure you want to do this?
 ```
 
 输入`yes`让 Django 拷贝这些文件。你会看到以下输出：
@@ -424,7 +426,13 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/educa.key -
 我们生成一个私有 key 和一个有效期是 1 年的 2048 个字节的证书。你将被要求输入以下信息：
 
 ```py
-Country Name (2 letter code) [AU]:State or Province Name (full name) [Some-State]:Locality Name (eg, city) []: MadridOrganization Name (eg, company) [Internet Widgits Pty Ltd]: Zenx ITOrganizational Unit Name (eg, section) []:Common Name (e.g. server FQDN or YOUR name) []: educaproject.comEmail Address []: email@domain.com
+Country Name (2 letter code) [AU]:
+State or Province Name (full name) [Some-State]:
+Locality Name (eg, city) []: Madrid
+Organization Name (eg, company) [Internet Widgits Pty Ltd]: Zenx IT
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []: educaproject.com
+Email Address []: email@domain.com
 ```
 
 你可以用自己的信息填写要求的数据。最重要的字段是`Common Name`。你必须制定证书的域名。我们将使用`educaproject.com`。

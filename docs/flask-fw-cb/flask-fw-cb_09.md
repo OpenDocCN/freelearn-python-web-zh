@@ -293,5 +293,5 @@ url_for = inject_url_for()['url_for']
 ###### 译者注
 
 Flask-Babel 使用方法参见其中文文档:
-[https://translations.readthedocs.io/en/latest/flask-babel.html](https://translations.readthedocs.io/en/latest/flask-babel.html)
+[`translations.readthedocs.io/en/latest/flask-babel.html`](https://translations.readthedocs.io/en/latest/flask-babel.html)
 

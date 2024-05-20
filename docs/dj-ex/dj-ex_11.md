@@ -853,7 +853,8 @@ None
 我们在`Subject`模型上执行了一个 QuerySet，并在`all_subjects`键中存储返回的对象。让我们检索缓存的数据：
 
 ```py
->>> cache.get('all_subjects')[<Subject: Mathematics>, <Subject: Music>, <Subject: Physics>, <Subject: Programming>]
+>>> cache.get('all_subjects')
+[<Subject: Mathematics>, <Subject: Music>, <Subject: Physics>, <Subject: Programming>]
 ```
 
 我们将在视图中缓存一些查询。编辑`courses`应用的`views.py`文件，添加以下导入：

@@ -1499,7 +1499,9 @@ python manage.py migrate shop
 你会看到包括以下行的输出：
 
 ```py
-Applying shop.0002_add_translation_model... OKApplying shop.0003_migrate_translatable_fields... OKApplying shop.0004_remove_untranslated_fields... OK
+Applying shop.0002_add_translation_model... OK
+Applying shop.0003_migrate_translatable_fields... OK
+Applying shop.0004_remove_untranslated_fields... OK
 ```
 
 现在模型已经跟数据库同步了。让我们翻译一个对象。
@@ -1524,19 +1526,25 @@ Applying shop.0002_add_translation_model... OKApplying shop.0003_migrate_transl
 当你访问翻译后的字段时，它们已经被当前语言处理了。你可以在对象上设置另一个当前语言，来访问指定的翻译：
 
 ```py
->>> product.set_current_language('es')>>> product.name'Té negro'>>> product.get_current_language()'es'
+>>> product.set_current_language('es')
+>>> product.name
+'Té negro'
+>>> product.get_current_language()
+'es'
 ```
 
 当使用`filter()`执行`QeurySet`时，你可以在相关的翻译对象上用`translations__`语法过滤：
 
 ```py
->>> Product.objects.filter(translations__name='Black tea')[<Product: Black tea>]
+>>> Product.objects.filter(translations__name='Black tea')
+[<Product: Black tea>]
 ```
 
 你也可以用`language()`管理器为对象检索指定语言：
 
 ```py
->>> Product.objects.language('es').all()[<Product: Té negro>, <Product: Té en polvo>, <Product: Té rojo>, <Product: Té verde>]
+>>> Product.objects.language('es').all()
+[<Product: Té negro>, <Product: Té en polvo>, <Product: Té rojo>, <Product: Té verde>]
 ```
 
 正如你所看到的，访问和查询翻译字段非常简单。
@@ -1784,32 +1792,57 @@ src/redis-server
 打开另一个终端，执行`python manage.py shell`，输入下面代码检索商品：
 
 ```py
-from shop.models import Productblack_tea = Product.objects.get(translations__name='Black tea')red_tea = Product.objects.get(translations__name='Red tea')green_tea = Product.objects.get(translations__name='Green tea')tea_powder = Product.objects.get(translations__name='Tea powder')
+from shop.models import Product
+black_tea = Product.objects.get(translations__name='Black tea')
+red_tea = Product.objects.get(translations__name='Red tea')
+green_tea = Product.objects.get(translations__name='Green tea')
+tea_powder = Product.objects.get(translations__name='Tea powder')
 ```
 
 然后添加一些测试购买到推荐引擎中：
 
 ```py
-from shop.recommender import Recommenderr = Recommender()r.products_bought([black_tea, red_tea])r.products_bought([black_tea, green_tea])r.products_bought([red_tea, black_tea, tea_powder])r.products_bought([green_tea, tea_powder])r.products_bought([black_tea, tea_powder])r.products_bought([red_tea, green_tea])
+from shop.recommender import Recommender
+r = Recommender()
+r.products_bought([black_tea, red_tea])
+r.products_bought([black_tea, green_tea])
+r.products_bought([red_tea, black_tea, tea_powder])
+r.products_bought([green_tea, tea_powder])
+r.products_bought([black_tea, tea_powder])
+r.products_bought([red_tea, green_tea])
 ```
 
 我们已经存储了以下评分：
 
 ```py
-black_tea: red_tea (2), tea_powder (2), green_tea (1)red_tea: black_tea (2), tea_powder (1), green_tea (1)green_tea: black_tea (1), tea_powder (1), red_tea(1)tea_powder: black_tea (2), red_tea (1), green_tea (1)
+black_tea: red_tea (2), tea_powder (2), green_tea (1)
+red_tea: black_tea (2), tea_powder (1), green_tea (1)
+green_tea: black_tea (1), tea_powder (1), red_tea(1)
+tea_powder: black_tea (2), red_tea (1), green_tea (1)
 ```
 
 让我们看一眼单个商品的推荐商品：
 
 ```py
 >>> r.suggest_products_for([black_tea])
-[<Product: Tea powder>, <Product: Red tea>, <Product: Green tea>]>>> r.suggest_products_for([red_tea])[<Product: Black tea>, <Product: Tea powder>, <Product: Green tea>]>>> r.suggest_products_for([green_tea])[<Product: Black tea>, <Product: Tea powder>, <Product: Red tea>]>>> r.suggest_products_for([tea_powder])[<Product: Black tea>, <Product: Red tea>, <Product: Green tea>]
+[<Product: Tea powder>, <Product: Red tea>, <Product: Green tea>]
+>>> r.suggest_products_for([red_tea])
+[<Product: Black tea>, <Product: Tea powder>, <Product: Green tea>]
+>>> r.suggest_products_for([green_tea])
+[<Product: Black tea>, <Product: Tea powder>, <Product: Red tea>]
+>>> r.suggest_products_for([tea_powder])
+[<Product: Black tea>, <Product: Red tea>, <Product: Green tea>]
 ```
 
 正如你所看到的，推荐商品的顺序基于它们的评分排序。让我们用多个商品的评分总和获得推荐商品：
 
 ```py
->>> r.suggest_products_for([black_tea, red_tea])[<Product: Tea powder>, <Product: Green tea>]>>> r.suggest_products_for([green_tea, red_tea])[<Product: Black tea>, <Product: Tea powder>]>>> r.suggest_products_for([tea_powder, black_tea])[<Product: Red tea>, <Product: Green tea>]
+>>> r.suggest_products_for([black_tea, red_tea])
+[<Product: Tea powder>, <Product: Green tea>]
+>>> r.suggest_products_for([green_tea, red_tea])
+[<Product: Black tea>, <Product: Tea powder>]
+>>> r.suggest_products_for([tea_powder, black_tea])
+[<Product: Red tea>, <Product: Green tea>]
 ```
 
 你可以看到，推荐商品的顺序与评分总和匹配。例如，`black_tea`和`red_tea`的推荐商品是`tea_powder(2+1)`和`green_tea(1+1)`。

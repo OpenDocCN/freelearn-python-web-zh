@@ -220,7 +220,18 @@ def markdown_format(text):
 现在，在浏览器中打开`http://127.0.0.1:8000/admin/blog/post/add/`，并用下面的正文添加一篇帖子：
 
 ```py
-This is a post formatted with markdown--------------------------------------*This is emphasized* and **this is more emphasized**.Here is a list:* One* Two* ThreeAnd a [link to the Django website](https://www.djangoproject.com/)
+This is a post formatted with markdown
+--------------------------------------
+
+*This is emphasized* and **this is more emphasized**.
+
+Here is a list:
+
+* One
+* Two
+* Three
+
+And a [link to the Django website](https://www.djangoproject.com/)
 ```
 
 打开浏览器，看看帖子是如何渲染的，如下图所示：
@@ -279,17 +290,22 @@ class PostSitemap(Sitemap):
 最后，我们只需要添加站点地图的 URL。编辑项目的`urls.py`文件，添加站点地图：
 
 ```py
-from django.conf.urls import include, urlfrom django.contrib import adminfrom django.contrib.sitemaps.views import sitemap 
+from django.conf.urls import include, url
+from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap 
 from blog.sitemaps import PostSitemap
-sitemaps = {
-	'posts': PostSitemap,}
+
+sitemaps = {
+	'posts': PostSitemap,
+}
 
 urlpatterns = [
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^blog/', 
 		include('blog.urls'namespace='blog', app_name='blog')),
 	url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-		name='django.contrib.sitemaps.views.sitemap'),]
+		name='django.contrib.sitemaps.views.sitemap'),
+]
 ```
 
 我们在这里包括了必需的导入，并定义了一个站点地图的字典。我们定义了一个匹配`sitemap.xml`的 URL 模式，并使用`sitemap`视图。把`sitemaps`字典传递给`sitemap`视图。在浏览器中打开`http://127.0.0.1:8000/sitemap.xml`，你会看到类似这样的 XML 代码：

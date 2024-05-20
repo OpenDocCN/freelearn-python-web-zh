@@ -109,7 +109,10 @@ class SubjectSerializer(serializers.ModelSerializer):
 让我们看看如何解析收到的数据。给定一个 JSON 字符串输入，你可以使用 REST Framework 提供的`JSONParser`类转换为 Python 对象。在 Python 终端中执行以下代码：
 
 ```py
-from io import BytesIOfrom rest_framework.parsers import JSONParserdata = b'{"id":4,"title":"Music","slug":"music"}'JSONParser().parse(BytesIO(data))
+from io import BytesIO
+from rest_framework.parsers import JSONParser
+data = b'{"id":4,"title":"Music","slug":"music"}'
+JSONParser().parse(BytesIO(data))
 ```
 
 你会看到以下输出：
@@ -262,11 +265,17 @@ class CourseSerializer(serializers.ModelSerializer):
 
 ```py
 "modules": [
-    {        "order": 0,        "title": "Django overview",        "description": "A brief overview about the Web Framework."    }, 
+    {
+        "order": 0,
+        "title": "Django overview",
+        "description": "A brief overview about the Web Framework."
+    }, 
     {
         "order": 1,
         "title": "Installing Django",
-        "description": "How to install Django."    },    ...
+        "description": "How to install Django."
+    },
+    ...
 ```
 
 你可以在[这里](http://www.django-rest-framework.org/api-guide/serializers/)阅读更多关于序列化器的信息。
@@ -389,7 +398,9 @@ curl -i -X POST -u student:password http://127.0.0.1:8000/api/courses/1/enroll/
 用已存在用户凭证替换`student:password`。你会获得以下响应：
 
 ```py
-HTTP/1.0 200 OK...{"enrolled": true}
+HTTP/1.0 200 OK
+...
+{"enrolled": true}
 ```
 
 你可以访问管理站点，检查用户是否报名参加课程。

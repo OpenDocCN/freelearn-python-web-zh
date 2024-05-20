@@ -19,7 +19,9 @@
 首先，我们用以下命令为新项目创建一个虚拟环境，并激活它：
 
 ```py
-mkdir envvirtualenv env/educasource env/educa/bin/activate
+mkdir env
+virtualenv env/educa
+source env/educa/bin/activate
 ```
 
 用以下命令在虚拟环境中安装 Django：

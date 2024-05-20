@@ -137,13 +137,13 @@ $ workon flask
 
 参考和安装链接如下：
 
-*   [https://pypi.python.org/pypi/virtualenv](https://pypi.python.org/pypi/virtualenv)
-*   [https://pypi.python.org/pypi/virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper)
-*   [https://pypi.python.org/pypi/Flask](https://pypi.python.org/pypi/Flask)
-*   [https://pypi.python.org/pypi/Werkzeug](https://pypi.python.org/pypi/Werkzeug)
-*   [https://pypi.python.org/pypi/Jinja2](https://pypi.python.org/pypi/Jinja2)
-*   [https://pypi.python.org/pypi/itsdangerous](https://pypi.python.org/pypi/itsdangerous)
-*   [https://pypi.python.org/pypi/MarkupSafe](https://pypi.python.org/pypi/MarkupSafe)
+*   [`pypi.python.org/pypi/virtualenv`](https://pypi.python.org/pypi/virtualenv)
+*   [`pypi.python.org/pypi/virtualenvwrapper`](https://pypi.python.org/pypi/virtualenvwrapper)
+*   [`pypi.python.org/pypi/Flask`](https://pypi.python.org/pypi/Flask)
+*   [`pypi.python.org/pypi/Werkzeug`](https://pypi.python.org/pypi/Werkzeug)
+*   [`pypi.python.org/pypi/Jinja2`](https://pypi.python.org/pypi/Jinja2)
+*   [`pypi.python.org/pypi/itsdangerous`](https://pypi.python.org/pypi/itsdangerous)
+*   [`pypi.python.org/pypi/MarkupSafe`](https://pypi.python.org/pypi/MarkupSafe)
 
 ## 处理基本配置
 
@@ -253,8 +253,8 @@ app.config.from_object('configuration.DevelopmentConfig')
 ###### 提示
 
 书源码下载地址：
-[https://pan.baidu.com/s/1o7GyZUi](https://pan.baidu.com/s/1o7GyZUi) 密码：x9rw
-[http://download.csdn.net/download/liusple/10186764](http://download.csdn.net/download/liusple/10186764)
+[`pan.baidu.com/s/1o7GyZUi`](https://pan.baidu.com/s/1o7GyZUi) 密码：x9rw
+[`download.csdn.net/download/liusple/10186764`](http://download.csdn.net/download/liusple/10186764)
 
 ## 组织静态文件
 

@@ -136,10 +136,10 @@ Alias /static/uploads/ "<Some static absolutepath>/flask_test_uploads/"
 
 #### 其他
 
-*   [http://httpd.apache.org/](http://httpd.apache.org/)
-*   [https://code.google.com/p/modwsgi/](https://code.google.com/p/modwsgi/)
-*   [http://wsgi.readthedocs.org/en/latest/](http://wsgi.readthedocs.org/en/latest/)
-*   [https://pythonhosted.org/setuptools/setuptools.html#setting-the-zip-safe-flag](https://pythonhosted.org/setuptools/setuptools.html#setting-the-zip-safe-flag)
+*   [`httpd.apache.org/`](http://httpd.apache.org/)
+*   [`code.google.com/p/modwsgi/`](https://code.google.com/p/modwsgi/)
+*   [`wsgi.readthedocs.org/en/latest/`](http://wsgi.readthedocs.org/en/latest/)
+*   [`pythonhosted.org/setuptools/setuptools.html#setting-the-zip-safe-flag`](https://pythonhosted.org/setuptools/setuptools.html#setting-the-zip-safe-flag)
 
 ## 使用 uWSGI 和 Nginx 部署
 
@@ -325,8 +325,8 @@ $ supervisorctl restart flask_catalog
 
 #### 其他
 
-*   [http://gunicorn-docs.readthedocs.org/en/latest/index.html](http://gunicorn-docs.readthedocs.org/en/latest/index.html)
-*   [http://supervisord.org/index.html](http://supervisord.org/index.html)
+*   [`gunicorn-docs.readthedocs.org/en/latest/index.html`](http://gunicorn-docs.readthedocs.org/en/latest/index.html)
+*   [`supervisord.org/index.html`](http://supervisord.org/index.html)
 
 ## 使用 Tornado 部署
 
