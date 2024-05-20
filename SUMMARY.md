@@ -18,4 +18,4 @@
 +   [Django Web 开发学习手册](docs/lrn-dj-webdev/README.md)
 +   [Flask 框架学习手册](docs/lrn-flask-fw/README.md)
 +   [精通 Django](docs/ms-dj/README.md)
-+   [Excel 2019 金融建模实用指南](docs/ms-flask/README.md)
++   [精通 Flask](docs/ms-flask/README.md)
