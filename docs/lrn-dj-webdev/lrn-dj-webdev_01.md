@@ -1,4 +1,4 @@
-# 第一章 Django 简介
+# 第一章：Django 简介
 
 欢迎来到 Django 开发 2.0 版本！
 

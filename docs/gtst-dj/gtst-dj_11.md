@@ -1,4 +1,4 @@
-# 第十一章。在 Django 中使用 AJAX
+# 第十一章：在 Django 中使用 AJAX
 
 AJAX 是异步 JavaScript 和 XML 的缩写。这项技术允许浏览器使用 JavaScript 与服务器异步通信。不一定需要刷新网页来执行服务器上的操作。
 

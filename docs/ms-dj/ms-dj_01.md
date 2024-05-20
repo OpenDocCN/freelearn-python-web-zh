@@ -1,4 +1,4 @@
-# 第一章。Django 简介和入门
+# 第一章：Django 简介和入门
 
 # 介绍 Django
 

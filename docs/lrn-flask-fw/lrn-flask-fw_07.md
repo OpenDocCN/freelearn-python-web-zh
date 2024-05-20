@@ -1,4 +1,4 @@
-# 第七章。AJAX 和 RESTful API
+# 第七章：AJAX 和 RESTful API
 
 在本章中，我们将使用 Flask-Restless 为博客应用创建一个 RESTful API。RESTful API 是以编程方式访问您的博客的一种方式，通过提供代表您的博客的高度结构化的数据。Flask-Restless 非常适用于我们的 SQLAlchemy 模型，并且还处理复杂的任务，如序列化和结果过滤。我们将使用我们的 REST API 为博客条目构建一个基于 AJAX 的评论功能。在本章结束时，您将能够为您的 SQLAlchemy 模型创建易于配置的 API，并在您的 Flask 应用中进行 AJAX 请求的创建和响应。
 

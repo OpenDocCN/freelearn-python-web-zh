@@ -1,4 +1,4 @@
-# 第二章。Discuss - 一个 Hacker News 克隆
+# 第二章：Discuss - 一个 Hacker News 克隆
 
 在本章中，我们将创建一个类似 Hacker News 或 Reddit 的 Web 应用程序，用户可以分享和讨论网络内容的链接。我们将称该应用程序为*Discuss*。为了保持简单，我们将模拟 Hacker News 的极简外观，它只有文本，界面非常简单。另一方面，Reddit 的外观要丰富得多，并且有许多额外的功能，我们不会将这些功能添加到我们的网站上。
 

@@ -1,4 +1,4 @@
-# 第九章。高级模型
+# 第九章：高级模型
 
 在第四章: 
     name = models.CharField(max_length=30) 

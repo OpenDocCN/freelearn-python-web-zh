@@ -1,4 +1,4 @@
-# 第七章。高级视图和 URLconfs
+# 第七章：高级视图和 URLconfs
 
 在第二章*视图和 URLconfs*中，我们解释了 Django 的视图函数和 URLconfs 的基础知识。本章将更详细地介绍框架中这两个部分的高级功能。
 
