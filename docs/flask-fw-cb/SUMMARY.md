@@ -1,3 +1,4 @@
++   [Flask 框架秘籍](README.md)
 +   [第一章：Flask 配置](flask-fw-cb_01.md)
 +   [第二章：使用 Jinja2 模板](flask-fw-cb_02.md)
 +   [第三章：Flask 中的数据模型](flask-fw-cb_03.md)
@@ -10,4 +11,3 @@
 +   [第十章：调试，错误处理和测试](flask-fw-cb_10.md)
 +   [第十一章：部署](flask-fw-cb_11.md)
 +   [第十二章：其他贴士和技巧](flask-fw-cb_12.md)
-+   [Flask 框架秘籍](flask-fw-cb_README.md)
